@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    container_name: student-task-container
+    ports:
+      - "5000:5000"
