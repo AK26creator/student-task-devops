@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request
+from prometheus_flask_exporter import PrometheusMetrics
 
 from database import get_db_connection, init_db
 
 app = Flask(__name__)
+
+metrics = PrometheusMetrics(app)
 
 init_db()
 

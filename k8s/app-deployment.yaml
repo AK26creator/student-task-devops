@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: student-task-app
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: student-task-app
+
+  template:
+    metadata:
+      labels:
+        app: student-task-app
+
+    spec:
+      containers:
+        - name: student-task-app
+          image: student-task-app:latest
+
+          ports:
+            - containerPort: 5000
+
+          env:
+            - name: DATABASE_PATH
+              value: "data/tasks.db"
+
+          volumeMounts:
+            - name: task-storage
+              mountPath: /app/data
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+      volumes:
+        - name: task-storage
+          persistentVolumeClaim:
+            claimName: student-task-data-pvc
